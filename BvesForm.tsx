@@ -1,13 +1,11 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import "./BvesForm.css";
+import "./from.css";
 
 const defaultPhoto =
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM0ZmFjZmUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjAgMjFWMTlhNCA0IDAgMCAwLTQtNEg4YTQgNCAwIDAgMC00IDR2MiI+PC9wYXRoPjxjaXJjbGUgY3g9IjEyIiBjeT0iNyIgcj0iNCIgPjwvY2lyY2xlPjwvc3ZnPg==";
 
-type Category = "" | "Professional" | "Student" | "Other";
-
-export const BVESForm: React.FC = () => {
-  const [category, setCategory] = useState<Category>("");
+const BvesForm: React.FC = () => {
+  const [category, setCategory] = useState("");
   const [showStudent, setShowStudent] = useState(false);
   const [showProfessional, setShowProfessional] = useState(false);
   const [showOther, setShowOther] = useState(false);
@@ -18,21 +16,18 @@ export const BVESForm: React.FC = () => {
   const [declare, setDeclare] = useState(false);
   const [terms, setTerms] = useState(false);
 
-  const [photo, setPhoto] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string>(defaultPhoto);
-
   const [success, setSuccess] = useState(false);
 
-  // Handle category change
+  // Show/hide extra details based on category
   const handleCategoryChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value as Category;
+    const value = e.target.value;
     setCategory(value);
     setShowStudent(value === "Student");
     setShowProfessional(value === "Professional");
     setShowOther(value === "Other");
   };
 
-  // Handle mutually exclusive checkboxes for course
+  // Mutually exclusive checkboxes for course
   const handleCompletedChange = () => {
     setCompleted(true);
     setYear(false);
@@ -42,7 +37,7 @@ export const BVESForm: React.FC = () => {
     setCompleted(false);
   };
 
-  // Handle mutually exclusive checkboxes for declaration
+  // Mutually exclusive checkboxes for declaration
   const handleDeclareChange = () => {
     setDeclare(true);
     setTerms(false);
@@ -52,27 +47,21 @@ export const BVESForm: React.FC = () => {
     setDeclare(false);
   };
 
-  // Handle photo upload
-  const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    setPhoto(file || null);
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        setPhotoPreview(ev.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setPhotoPreview(defaultPhoto);
-    }
-  };
-
-  // Handle form submit
+  // Form submit
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setSuccess(true);
-    setTimeout(() => setSuccess(false), 3000);
-    // Optionally reset form fields here
+    setTimeout(() => setSuccess(false), 2500);
+    setCategory("");
+    setShowStudent(false);
+    setShowProfessional(false);
+    setShowOther(false);
+    setCompleted(false);
+    setYear(false);
+    setDeclare(false);
+    setTerms(false);
+    // Optionally reset other form fields if you add state for them
+    (e.target as HTMLFormElement).reset();
   };
 
   return (
@@ -101,7 +90,6 @@ export const BVESForm: React.FC = () => {
           </ul>
         </div>
       </div>
-
       <h2>BVES Registration Form</h2>
       <form id="bvesForm" onSubmit={handleSubmit}>
         {/* Full Name */}
@@ -122,8 +110,7 @@ export const BVESForm: React.FC = () => {
         {/* Profile Photo */}
         <div className="form-group">
           <label htmlFor="photo">Profile Photo Upload</label>
-          <img src={photoPreview} alt="Preview" className="profile-preview" />
-          <input type="file" id="photo" name="photo" accept="image/*" onChange={handlePhotoChange} />
+          <input type="file" id="photo" name="photo" accept="image/*" />
         </div>
         {/* Mobile Number */}
         <div className="form-group">
@@ -334,10 +321,14 @@ export const BVESForm: React.FC = () => {
         </div>
         {/* Submit */}
         <button type="submit">Submit</button>
-        {success && <div className="success">✅ Form submitted successfully!</div>}
       </form>
+      {success && (
+        <div id="successMsg" className="success">
+          ✅ Form submitted successfully!
+        </div>
+      )}
     </div>
   );
 };
 
-export default BVESForm;
+export default BvesForm;
