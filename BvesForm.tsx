@@ -1,24 +1,23 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import "./from.css";
 
-const defaultPhoto =
-  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiM0ZmFjZmUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjAgMjFWMTlhNCA0IDAgMCAwLTQtNEg4YTQgNCAwIDAgMC00IDR2MiI+PC9wYXRoPjxjaXJjbGUgY3g9IjEyIiBjeT0iNyIgcj0iNCIgPjwvY2lyY2xlPjwvc3ZnPg==";
-
 const BvesForm: React.FC = () => {
+  // Category state
   const [category, setCategory] = useState("");
+  // Section visibility
   const [showStudent, setShowStudent] = useState(false);
   const [showProfessional, setShowProfessional] = useState(false);
   const [showOther, setShowOther] = useState(false);
-
+  // Mutually exclusive course checkboxes
   const [completed, setCompleted] = useState(false);
   const [year, setYear] = useState(false);
-
+  // Declaration checkboxes
   const [declare, setDeclare] = useState(false);
   const [terms, setTerms] = useState(false);
-
+  // Success message
   const [success, setSuccess] = useState(false);
 
-  // Show/hide extra details based on category
+  // Category change handler
   const handleCategoryChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setCategory(value);
@@ -27,7 +26,7 @@ const BvesForm: React.FC = () => {
     setShowOther(value === "Other");
   };
 
-  // Mutually exclusive checkboxes for course
+  // Mutually exclusive course checkboxes
   const handleCompletedChange = () => {
     setCompleted(true);
     setYear(false);
@@ -37,31 +36,22 @@ const BvesForm: React.FC = () => {
     setCompleted(false);
   };
 
-  // Mutually exclusive checkboxes for declaration
-  const handleDeclareChange = () => {
-    setDeclare(true);
-    setTerms(false);
+  // Declaration checkboxes (both can be checked)
+  const handleDeclareChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDeclare(e.target.checked);
   };
-  const handleTermsChange = () => {
-    setTerms(true);
-    setDeclare(false);
+  const handleTermsChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTerms(e.target.checked);
   };
 
   // Form submit
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setSuccess(true);
-    setTimeout(() => setSuccess(false), 2500);
-    setCategory("");
-    setShowStudent(false);
-    setShowProfessional(false);
-    setShowOther(false);
-    setCompleted(false);
-    setYear(false);
-    setDeclare(false);
-    setTerms(false);
-    // Optionally reset other form fields if you add state for them
-    (e.target as HTMLFormElement).reset();
+    if (declare && terms) {
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 2500);
+      // Optionally reset form fields here
+    }
   };
 
   return (
@@ -91,7 +81,7 @@ const BvesForm: React.FC = () => {
         </div>
       </div>
       <h2>BVES Registration Form</h2>
-      <form id="bvesForm" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         {/* Full Name */}
         <div className="form-group">
           <label htmlFor="fullname">Full Name</label>
